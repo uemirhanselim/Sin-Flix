@@ -1,0 +1,189 @@
+Flutter ile Dating App uygulaması geliştir. Aşağıdaki gereksinimleri tam olarak karşıla:
+
+## PROJE YAPISI VE MİMARİ
+- Clean Architecture kullan (presentation, domain, data katmanları)
+- MVVM pattern implementasyonu
+- BLoC State Management (flutter_bloc)
+- Dependency Injection (get_it)
+
+## TEMEL ÖZELLİKLER
+
+### 1. Authentication (Kimlik Doğrulama)
+- Login ve Register ekranları
+- JWT token tabanlı authentication
+- Secure storage ile token saklama (flutter_secure_storage)
+- Auto-login functionality
+- Form validation
+
+### 2. Ana Sayfa (Keşfet)
+- Infinite scroll implementasyonu
+- Her sayfada 5 film gösterimi
+- Loading indicators
+- Pull-to-refresh özelliği
+- Favori işlemlerinde instant UI update
+- Error handling ve retry mekanizması
+
+### 3. Profil Sayfası
+- Kullanıcı bilgileri görüntüleme
+- Favori filmler listesi
+- Profil foto upload (image_picker)
+- Settings seçenekleri
+
+### 4. Navigation
+- Bottom Navigation Bar (4 tab: Keşfet, Favoriler, Mesajlar, Profil)
+- Navigation service implementasyonu
+- Route management
+
+## EKRANLAR
+1. Splash Screen (animated logo)
+2. Login Screen
+3. Register Screen  
+4. Home/Discover Screen
+5. Favorites Screen
+6. Messages Screen (placeholder)
+7. Profile Screen
+8. Limited Offer Bottom Sheet
+
+## BONUS ÖZELLİKLER
+
+### Theme System
+- Light/Dark theme support
+- Custom color scheme
+- Typography system
+- Material 3 design
+
+### Services
+- Navigation Service (global navigation)
+- Localization Service (Türkçe/İngilizce - easy_localization)
+- Logger Service (logger package)
+- Network Service (dio)
+- Local Storage Service
+
+### Firebase Integration
+- Firebase Crashlytics (temel düzey)
+- Firebase Analytics (temel event tracking)
+- Firebase project setup
+
+### Animations
+- Lottie animations (splash, loading, empty states)
+- Hero animations
+- Custom transitions
+- Micro-interactions
+
+### Security & Performance
+- SSL pinning (dio_ssl_pinning)
+- Token refresh mechanism
+- Caching strategy
+- Image caching ve optimization
+
+## TEKNİK GEREKSINIMLER
+
+### Packages (pubspec.yaml'a ekle):
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_bloc: ^8.1.3
+  
+  # Dependency Injection
+  get_it: ^7.6.4
+  injectable: ^2.3.2
+  
+  # Network
+  dio: ^5.3.2
+  retrofit: ^4.0.3
+  
+  # Local Storage
+  flutter_secure_storage: ^9.0.0
+  shared_preferences: ^2.2.2
+  
+  # UI
+  cached_network_image: ^3.3.0
+  image_picker: ^1.0.4
+  lottie: ^2.7.0
+  
+  # Navigation
+  go_router: ^12.1.1
+  
+  # Localization
+  easy_localization: ^3.0.3
+  
+  # Firebase
+  firebase_core: ^2.21.0
+  firebase_crashlytics: ^3.4.4
+  firebase_analytics: ^10.6.4
+  
+  # Utils
+  logger: ^2.0.2
+  equatable: ^2.0.5
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  # Code Generation
+  build_runner: ^2.4.7
+  injectable_generator: ^2.4.1
+  retrofit_generator: ^8.0.4
+  json_serializable: ^6.7.1
+```
+
+## FOLDER STRUCTURE
+```
+lib/
+├── core/
+│   ├── constants/
+│   ├── errors/
+│   ├── network/
+│   ├── themes/
+│   ├── utils/
+│   └── services/
+├── features/
+│   ├── auth/
+│   │   ├── data/
+│   │   ├── domain/
+│   │   └── presentation/
+│   ├── home/
+│   ├── profile/
+│   └── favorites/
+├── shared/
+│   ├── widgets/
+│   ├── models/
+│   └── extensions/
+├── l10n/
+└── main.dart
+```
+
+## UI/UX REQUIREMENTS
+- Modern, clean design
+- Consistent spacing ve typography
+- Responsive design
+- Accessibility support
+- Smooth animations
+- Error states ve empty states
+- Loading states
+
+## API ENDPOINTS (Mock)
+- POST /auth/login
+- POST /auth/register
+- GET /movies?page=1&limit=5
+- POST /movies/{id}/favorite
+- DELETE /movies/{id}/favorite
+- GET /user/profile
+- PUT /user/profile
+
+## ADDITIONAL REQUIREMENTS
+- Unit tests (core business logic için)
+- Integration tests (auth flow için)
+- Code documentation
+- README.md file
+- Error logging ve crash reporting
+- Performance monitoring
+- Offline support (basic caching)
+
+Tüm kodu production-ready kalitede yaz. Best practices kullan, clean code principles uygula. Her feature için BLoC pattern kullan ve proper error handling implementasyonu yap. 
+
+Projeyi adım adım oluştur ve her adımda açıklama ver.

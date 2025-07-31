@@ -1,0 +1,16 @@
+{
+  "hello": "Hello",
+  "welcome": "Welcome",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot password",
+  "login": "Login",
+  "register": "Register",
+  "loginSubtitle": "Please enter your details to login.",
+  "fullName": "Full Name",
+  "confirmPassword": "Confirm Password",
+  "termsAndConditions": "I have read and accept the ",
+  "iHaveReadAndAccept": "user agreement.",
+  "profileDetail": "Profile Detail",
+  "continueButton": "Continue"
+}

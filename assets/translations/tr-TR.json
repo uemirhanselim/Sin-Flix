@@ -1,0 +1,16 @@
+{
+  "hello": "Merhabalar",
+  "welcome": "Hoşgeldiniz",
+  "email": "E-posta",
+  "password": "Şifre",
+  "forgotPassword": "Şifremi unuttum",
+  "login": "Giriş yap",
+  "register": "Kayıt ol",
+  "loginSubtitle": "Lütfen giriş yapmak için bilgilerinizi girin.",
+  "fullName": "Ad Soyad",
+  "confirmPassword": "Şifre Tekrar",
+  "termsAndConditions": "Kullanıcı sözleşmesini ",
+  "iHaveReadAndAccept": "okudum ve kabul ediyorum.",
+  "profileDetail": "Profil Detay",
+  "continueButton": "Devam Et"
+}
