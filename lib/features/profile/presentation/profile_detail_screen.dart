@@ -26,7 +26,11 @@ class ProfileDetailScreen extends StatelessWidget {
           create: (context) => ProfileDetailBloc(uploadUserPhoto: locator<UploadUserPhoto>()),
         ),
         BlocProvider(
-          create: (context) => UserBloc(uploadUserPhoto: locator(), logger: locator()),
+          create: (context) => UserBloc(
+            uploadUserPhoto: locator(),
+            logger: locator(),
+            getUserProfile: locator(),
+          ),
         ),
       ],
       child: MultiBlocListener(

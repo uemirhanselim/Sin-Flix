@@ -21,6 +21,15 @@ class UserPhotoUploaded extends UserState {
   List<Object> get props => [user];
 }
 
+class UserProfileLoaded extends UserState {
+  final UserEntity user;
+
+  const UserProfileLoaded({required this.user});
+
+  @override
+  List<Object> get props => [user];
+}
+
 class UserError extends UserState {
   final String message;
 

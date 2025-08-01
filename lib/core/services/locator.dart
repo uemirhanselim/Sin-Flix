@@ -1,5 +1,8 @@
 import 'package:dating_app/features/home/presentation/bloc/home_bloc.dart';
+import 'package:dating_app/features/movie/domain/usecases/toggle_favorite.dart';
 import 'package:dating_app/features/profile/presentation/bloc/profile_detail_bloc.dart';
+import 'package:dating_app/features/user/domain/usecases/get_user_profile.dart';
+import 'package:dating_app/features/user/presentation/bloc/user_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,6 +20,9 @@ import '../../features/movie/data/datasources/movie_remote_data_source.dart';
 import '../../features/movie/data/repositories/movie_repository_impl.dart';
 import '../../features/movie/domain/repositories/movie_repository.dart';
 import '../../features/movie/domain/usecases/get_movie_list.dart';
+import '../../features/movie/domain/usecases/toggle_favorite.dart';
+import '../../features/movie/domain/usecases/get_favorite_movies.dart'; // Yeni import
+import '../../features/favorites/presentation/bloc/favorite_movies_bloc.dart'; // Yeni import
 import 'logger_service.dart';
 
 final GetIt locator = GetIt.instance;
@@ -94,10 +100,15 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => LoginUser(locator()));
   locator.registerLazySingleton(() => UploadUserPhoto(locator()));
   locator.registerLazySingleton(() => GetMovieList(locator()));
+  locator.registerLazySingleton(() => ToggleFavorite(locator()));
+  locator.registerLazySingleton(() => GetFavoriteMovies(locator()));
+  locator.registerLazySingleton(() => GetUserProfile(locator())); // Yeni UseCase kaydı
 
   // Blocs
   locator.registerFactory(() => ProfileDetailBloc(uploadUserPhoto: locator<UploadUserPhoto>()));
-  locator.registerFactory(() => HomeBloc(getMovieList: locator<GetMovieList>(), logger: locator<LoggerService>(), secureStorage: locator<FlutterSecureStorage>()));
+  locator.registerFactory(() => HomeBloc(getMovieList: locator<GetMovieList>(), logger: locator<LoggerService>(), secureStorage: locator<FlutterSecureStorage>(), toggleFavorite: locator<ToggleFavorite>()));
+  locator.registerFactory(() => FavoriteMoviesBloc(getFavoriteMovies: locator<GetFavoriteMovies>(), logger: locator<LoggerService>()));
+  locator.registerFactory(() => UserBloc(uploadUserPhoto: locator<UploadUserPhoto>(), getUserProfile: locator<GetUserProfile>(), logger: locator<LoggerService>())); // UserBloc güncellendi
 }
 
  

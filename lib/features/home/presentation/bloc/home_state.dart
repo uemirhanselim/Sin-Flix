@@ -14,11 +14,22 @@ class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
   final List<MovieEntity> movies;
+  final bool hasReachedMax;
 
-  const HomeLoaded({required this.movies});
+  const HomeLoaded({this.movies = const [], this.hasReachedMax = false});
+
+  HomeLoaded copyWith({
+    List<MovieEntity>? movies,
+    bool? hasReachedMax,
+  }) {
+    return HomeLoaded(
+      movies: movies ?? this.movies,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+    );
+  }
 
   @override
-  List<Object> get props => [movies];
+  List<Object> get props => [movies, hasReachedMax];
 }
 
 class HomeError extends HomeState {

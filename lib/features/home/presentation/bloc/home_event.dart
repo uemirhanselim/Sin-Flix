@@ -10,10 +10,16 @@ abstract class HomeEvent extends Equatable {
 class CheckAuthToken extends HomeEvent {}
 
 class GetMoviesEvent extends HomeEvent {
-  final int page;
+  const GetMoviesEvent();
+}
 
-  const GetMoviesEvent({required this.page});
+class LoadMoreMovies extends HomeEvent {}
+
+class ToggleFavoriteEvent extends HomeEvent {
+  final String movieId;
+
+  const ToggleFavoriteEvent({required this.movieId});
 
   @override
-  List<Object> get props => [page];
+  List<Object> get props => [movieId];
 }

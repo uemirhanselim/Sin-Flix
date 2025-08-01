@@ -72,6 +72,7 @@ dependencies:
   equatable: ^2.0.5
   json_annotation: ^4.9.0
   dartz: ^0.10.1
+  bloc_concurrency: ^0.2.5
 
 dev_dependencies:
   flutter_test:

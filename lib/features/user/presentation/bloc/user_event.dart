@@ -16,3 +16,5 @@ class UploadUserPhotoEvent extends UserEvent {
   @override
   List<Object> get props => [photo];
 }
+
+class LoadUserProfile extends UserEvent {}

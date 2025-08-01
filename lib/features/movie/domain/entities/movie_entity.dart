@@ -21,6 +21,28 @@ class MovieEntity extends Equatable {
     required this.isFavorite,
   });
 
+  MovieEntity copyWith({
+    String? id,
+    String? title,
+    String? year,
+    String? poster,
+    String? plot,
+    String? genre,
+    List<String>? images,
+    bool? isFavorite,
+  }) {
+    return MovieEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      year: year ?? this.year,
+      poster: poster ?? this.poster,
+      plot: plot ?? this.plot,
+      genre: genre ?? this.genre,
+      images: images ?? this.images,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
+
   @override
   List<Object?> get props => [id, title, year, poster, plot, genre, images, isFavorite];
 }
