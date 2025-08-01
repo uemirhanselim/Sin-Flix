@@ -2,7 +2,7 @@ import 'package:logger/logger.dart';
 
 abstract class LoggerService {
   void i(dynamic message);
-  void e(dynamic message, [dynamic error, StackTrace? stackTrace]);
+  void e(dynamic message, [String? error, StackTrace? stackTrace]);
   void d(dynamic message);
   void w(dynamic message);
 }
@@ -29,7 +29,7 @@ class LoggerServiceImpl implements LoggerService {
   }
 
   @override
-  void e(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+  void e(dynamic message, [String? error, StackTrace? stackTrace]) {
     _logger.e(message, error: error, stackTrace: stackTrace);
   }
 

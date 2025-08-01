@@ -47,7 +47,7 @@ dependencies:
   retrofit: ^4.0.3
 
   # Local Storage
-  flutter_secure_storage: ^9.0.0
+  flutter_secure_storage: ^9.2.4
   shared_preferences: ^2.2.2
 
   # UI
@@ -70,7 +70,7 @@ dependencies:
   # Utils
   logger: ^2.0.2
   equatable: ^2.0.5
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   dartz: ^0.10.1
 
 dev_dependencies:

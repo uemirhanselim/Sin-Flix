@@ -37,7 +37,6 @@ class AuthRepositoryImpl implements AuthRepository {
         await secureStorage.write(key: 'token', value: response.data.token);
         final userJson = jsonEncode(response.data.toJson());
         await sharedPreferences.setString('user', userJson);
-        print("başarılı");
         return Right(response.data);
       } else {
         return Left(ServerFailure(message: response.response.message));

@@ -8,7 +8,7 @@ import 'features/splash/presentation/splash_screen.dart';
 import 'features/auth/presentation/login_screen.dart';
 import 'features/auth/presentation/register_screen.dart';
 import 'features/profile/presentation/profile_detail_screen.dart';
-// import 'features/home/presentation/home_screen.dart';
+import 'features/home/presentation/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,12 +48,12 @@ class MyApp extends StatelessWidget {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const ProfileDetailScreen(),
+                builder: (context, state) => const LoginScreen(),
               ),
-              // GoRoute(
-              //   path: '/home',
-              //   builder: (context, state) => const HomeScreen(),
-              // ),
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
               GoRoute(
                 path: '/login',
                 builder: (context, state) => const LoginScreen(),

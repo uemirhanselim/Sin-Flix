@@ -43,7 +43,7 @@ class ProfileDetailScreen extends StatelessWidget {
                 Navigator.of(context).pop(); // Pop the loading dialog
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('photoUploadedSuccessfully'))));
                 print("Fotoğraf başarıyla yüklendi.");
-                context.pop(); // Pop the current screen (ProfileDetailScreen)
+                context.go('/home'); // Navigate to home screen
               } else if (state is UserError) {
                 Navigator.of(context).pop(); // Pop the loading dialog
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
