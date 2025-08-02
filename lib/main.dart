@@ -1,3 +1,8 @@
+import 'dart:ui';
+
+import 'package:dating_app/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,12 +14,20 @@ import 'features/auth/presentation/login_screen.dart';
 import 'features/auth/presentation/register_screen.dart';
 import 'features/profile/presentation/profile_detail_screen.dart';
 import 'features/home/presentation/home_screen.dart';
-import 'features/profile/presentation/profile_screen.dart'; // New import
+import 'features/profile/presentation/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await setupLocator();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en', 'US'), Locale('tr', 'TR')],
@@ -45,11 +58,11 @@ class MyApp extends StatelessWidget {
           supportedLocales: context.supportedLocales,
           localizationsDelegates: context.localizationDelegates,
           routerConfig: GoRouter(
-            initialLocation: '/profile', // Changed initial location to /home
+            initialLocation: '/',
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const LoginScreen(), // Assuming '/' should be login
+                builder: (context, state) => const SplashScreen(),
               ),
               GoRoute(
                 path: '/home',
@@ -57,10 +70,15 @@ class MyApp extends StatelessWidget {
                   return CustomTransitionPage(
                     key: state.pageKey,
                     child: const HomeScreen(),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    transitionsBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    ) {
                       return SlideTransition(
                         position: Tween<Offset>(
-                          begin: const Offset(-1.0, 0.0), // Soldan sağa
+                          begin: const Offset(-1.0, 0.0),
                           end: Offset.zero,
                         ).animate(animation),
                         child: child,
@@ -87,11 +105,16 @@ class MyApp extends StatelessWidget {
                   return CustomTransitionPage(
                     key: state.pageKey,
                     child: const ProfileScreen(),
-                    transitionDuration: const Duration(milliseconds: 300), // Hızlandırıldı
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    transitionDuration: const Duration(milliseconds: 300),
+                    transitionsBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    ) {
                       return SlideTransition(
                         position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0), // Sağdan sola
+                          begin: const Offset(1.0, 0.0),
                           end: Offset.zero,
                         ).animate(animation),
                         child: child,
@@ -100,7 +123,6 @@ class MyApp extends StatelessWidget {
                   );
                 },
               ),
-              // Diğer route'lar burada tanımlanacak
             ],
           ),
         );

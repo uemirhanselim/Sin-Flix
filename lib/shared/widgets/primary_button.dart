@@ -1,3 +1,4 @@
+import 'package:dating_app/core/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,13 +12,21 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFE50914),
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.text,
         minimumSize: Size.fromHeight(53.h),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.r),
+        ),
       ),
       onPressed: onPressed,
-      child: Text(text, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: AppColors.text,
+        ),
+      ),
     );
   }
 }

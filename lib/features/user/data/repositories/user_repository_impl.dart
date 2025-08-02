@@ -14,7 +14,10 @@ class UserRepositoryImpl implements UserRepository {
   final UserRemoteDataSource remoteDataSource;
   final SharedPreferences sharedPreferences;
 
-  UserRepositoryImpl({required this.remoteDataSource, required this.sharedPreferences});
+  UserRepositoryImpl({
+    required this.remoteDataSource,
+    required this.sharedPreferences,
+  });
 
   @override
   Future<Either<Failure, UserEntity>> uploadPhoto({required File photo}) async {
@@ -30,8 +33,13 @@ class UserRepositoryImpl implements UserRepository {
         if (userJsonString != null) {
           final userMap = jsonDecode(userJsonString) as Map<String, dynamic>;
           final currentUserModel = UserModel.fromJson(userMap);
-          final updatedUserModel = currentUserModel.copyWith(photoUrl: response.data.photoUrl); // Assuming response.data has photoUrl
-          await sharedPreferences.setString('user', jsonEncode(updatedUserModel.toJson()));
+          final updatedUserModel = currentUserModel.copyWith(
+            photoUrl: response.data.photoUrl,
+          ); // Assuming response.data has photoUrl
+          await sharedPreferences.setString(
+            'user',
+            jsonEncode(updatedUserModel.toJson()),
+          );
         }
         return Right(response.data);
       } else {
@@ -45,20 +53,28 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, UserEntity>> getUserProfile() async {
     try {
-      final response = await remoteDataSource.getUserProfile();
-      if (response.response.code == 200) {
-        return Right(response.data);
+      final userJsonString = sharedPreferences.getString('user');
+      if (userJsonString != null) {
+        final userMap = jsonDecode(userJsonString) as Map<String, dynamic>;
+        final userModel = UserModel.fromJson(userMap);
+        return Right(
+          UserEntity(
+            id: userModel.id,
+            name: userModel.name,
+            email: userModel.email,
+            photoUrl: userModel.photoUrl,
+            // Add other fields as needed
+          ),
+        );
       } else {
-        return Left(ServerFailure(message: response.response.message));
+        return const Left(
+          CacheFailure(
+            message: 'Kullanıcı bilgileri yerel depolamada bulunamadı.',
+          ),
+        );
       }
-    } on DioException catch (e) {
-      String errorMessage = 'Bilinmeyen bir ağ hatası oluştu.';
-      if (e.response?.data is Map<String, dynamic>) {
-        errorMessage = e.response!.data['message'] ?? errorMessage;
-      }
-      return Left(ServerFailure(message: errorMessage));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(CacheFailure(message: e.toString()));
     }
   }
 }

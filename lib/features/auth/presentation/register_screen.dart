@@ -1,6 +1,8 @@
 import 'package:dating_app/core/services/logger_service.dart';
+import 'package:dating_app/core/themes/app_theme.dart';
 import 'package:dating_app/features/auth/domain/usecases/login_user.dart';
 import 'package:dating_app/features/auth/domain/usecases/register_user.dart';
+import 'package:dating_app/shared/widgets/lottie_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,12 +23,13 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthBloc(
-        loginUser: locator<LoginUser>(),
-        registerUser: locator<RegisterUser>(),
-        logger: locator<LoggerService>(),
-        initialState: const RegisterFormState(),
-      ),
+      create:
+          (_) => AuthBloc(
+            loginUser: locator<LoginUser>(),
+            registerUser: locator<RegisterUser>(),
+            logger: locator<LoggerService>(),
+            initialState: const RegisterFormState(),
+          ),
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is RegisterFormState) {
@@ -34,18 +37,33 @@ class RegisterScreen extends StatelessWidget {
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => const Center(child: CircularProgressIndicator()),
+                builder:
+                    (_) => Center(
+                      child: LottieAnimation(
+                        "assets/lottie/loading.json",
+                        width: 70.w,
+                        height: 70.h,
+                      ),
+                    ),
               );
-            } else if (state.formStatus == FormStatus.submissionSuccess || state.formStatus == FormStatus.submissionFailure) {
-              Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
+            } else if (state.formStatus == FormStatus.submissionSuccess ||
+                state.formStatus == FormStatus.submissionFailure) {
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).popUntil((route) => route.isFirst);
             }
           }
 
           if (state is AuthAuthenticated) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kayıt başarılı!')));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(tr("registerSuccessfull"))));
             context.go('/login');
           } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         child: Scaffold(
@@ -54,7 +72,7 @@ class RegisterScreen extends StatelessWidget {
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF1a1a1a), Color(0xFF000000)],
+                  colors: [Color(0xFF1a1a1a), AppColors.background],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -80,6 +98,7 @@ class _RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         final registerState = state as RegisterFormState;
@@ -89,15 +108,15 @@ class _RegisterForm extends StatelessWidget {
           children: [
             SizedBox(height: 100.h),
             Text(
-              tr('register'),
+              tr('welcome'),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.bold, color: Colors.white),
+              style: textTheme.headlineMedium,
             ),
-                        SizedBox(height: 8.h),
+            SizedBox(height: 8.h),
             Text(
-              tr('loginSubtitle'),
+              tr('registerSubtitle'),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey[400]),
+              style: textTheme.bodyMedium,
             ),
             SizedBox(height: 40.h),
             _FullNameTextField(fullName: registerState.fullName),
@@ -106,15 +125,19 @@ class _RegisterForm extends StatelessWidget {
             SizedBox(height: 16.h),
             _PasswordTextField(password: registerState.password),
             SizedBox(height: 10.h),
-            _ConfirmPasswordTextField(confirmPassword: registerState.confirmPassword, password: registerState.password),
+            _ConfirmPasswordTextField(
+              confirmPassword: registerState.confirmPassword,
+              password: registerState.password,
+            ),
             SizedBox(height: 16.h),
             _TermsAndConditionsText(),
             SizedBox(height: 40.h),
             PrimaryButton(
               text: tr('register'),
-              onPressed: registerState.isValid
-                  ? () => context.read<AuthBloc>().add(RegisterSubmitted())
-                  : () {},
+              onPressed:
+                  registerState.isValid
+                      ? () => context.read<AuthBloc>().add(RegisterSubmitted())
+                      : () {},
             ),
             SizedBox(height: 30.h),
             const _SocialButtons(),
@@ -137,7 +160,9 @@ class _FullNameTextField extends StatelessWidget {
       initialValue: fullName,
       hintText: tr('fullName'),
       prefixIcon: Image.asset("assets/icons/add_user.png"),
-      onChanged: (value) => context.read<AuthBloc>().add(FullNameChanged(fullName: value)),
+      onChanged:
+          (value) =>
+              context.read<AuthBloc>().add(FullNameChanged(fullName: value)),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (_) {
         if (fullName.isEmpty) {
@@ -160,7 +185,8 @@ class _EmailTextField extends StatelessWidget {
       hintText: tr('email'),
       prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey),
       keyboardType: TextInputType.emailAddress,
-      onChanged: (value) => context.read<AuthBloc>().add(EmailChanged(email: value)),
+      onChanged:
+          (value) => context.read<AuthBloc>().add(EmailChanged(email: value)),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (_) {
         if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+').hasMatch(email)) {
@@ -191,10 +217,17 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
       prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
       obscureText: _obscureText,
       suffixIcon: IconButton(
-        icon: Icon(_obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: Colors.grey),
+        icon: Icon(
+          _obscureText
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
+          color: Colors.grey,
+        ),
         onPressed: () => setState(() => _obscureText = !_obscureText),
       ),
-      onChanged: (value) => context.read<AuthBloc>().add(PasswordChanged(password: value)),
+      onChanged:
+          (value) =>
+              context.read<AuthBloc>().add(PasswordChanged(password: value)),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (_) {
         if (widget.password.length < 6) {
@@ -209,10 +242,14 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
 class _ConfirmPasswordTextField extends StatefulWidget {
   final String password;
   final String confirmPassword;
-  const _ConfirmPasswordTextField({required this.password, required this.confirmPassword});
+  const _ConfirmPasswordTextField({
+    required this.password,
+    required this.confirmPassword,
+  });
 
   @override
-  State<_ConfirmPasswordTextField> createState() => _ConfirmPasswordTextFieldState();
+  State<_ConfirmPasswordTextField> createState() =>
+      _ConfirmPasswordTextFieldState();
 }
 
 class _ConfirmPasswordTextFieldState extends State<_ConfirmPasswordTextField> {
@@ -226,10 +263,18 @@ class _ConfirmPasswordTextFieldState extends State<_ConfirmPasswordTextField> {
       prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
       obscureText: _obscureText,
       suffixIcon: IconButton(
-        icon: Icon(_obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: Colors.grey),
+        icon: Icon(
+          _obscureText
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
+          color: Colors.grey,
+        ),
         onPressed: () => setState(() => _obscureText = !_obscureText),
       ),
-      onChanged: (value) => context.read<AuthBloc>().add(ConfirmPasswordChanged(confirmPassword: value)),
+      onChanged:
+          (value) => context.read<AuthBloc>().add(
+            ConfirmPasswordChanged(confirmPassword: value),
+          ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (_) {
         if (widget.password != widget.confirmPassword) {
@@ -244,18 +289,26 @@ class _ConfirmPasswordTextFieldState extends State<_ConfirmPasswordTextField> {
 class _TermsAndConditionsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding:  EdgeInsets.only(left: 10.w),
+      padding: EdgeInsets.only(left: 10.w),
       child: RichText(
         textAlign: TextAlign.left,
         text: TextSpan(
-          style: TextStyle(color: Colors.grey[400], fontSize: 14.sp),
+          style: textTheme.bodySmall?.copyWith(color: Colors.grey[400]),
           children: [
             TextSpan(text: tr('termsAndConditions')),
             TextSpan(
               text: tr('iHaveReadAndAccept'),
-              style: const TextStyle(color: Colors.white, decoration: TextDecoration.underline),
-              recognizer: TapGestureRecognizer()..onTap = () { /* TODO: Kullanıcı sözleşmesini göster */ },
+              style: textTheme.bodySmall?.copyWith(
+                decoration: TextDecoration.underline,
+                color: AppColors.text,
+              ),
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () {
+                      /* TODO: Kullanıcı sözleşmesini göster */
+                    },
             ),
           ],
         ),
@@ -272,11 +325,20 @@ class _SocialButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SocialButton(assetPath: 'assets/icons/google.png', onTap: () {}), // Placeholder
+        SocialButton(
+          assetPath: 'assets/icons/google.png',
+          onTap: () {},
+        ), // Placeholder
         SizedBox(width: 20.w),
-        SocialButton(assetPath: 'assets/icons/apple.png', onTap: () {}), // Placeholder
+        SocialButton(
+          assetPath: 'assets/icons/apple.png',
+          onTap: () {},
+        ), // Placeholder
         SizedBox(width: 20.w),
-        SocialButton(assetPath: 'assets/icons/facebook.png', onTap: () {}), // Placeholder
+        SocialButton(
+          assetPath: 'assets/icons/facebook.png',
+          onTap: () {},
+        ), // Placeholder
       ],
     );
   }
@@ -285,20 +347,24 @@ class _SocialButtons extends StatelessWidget {
 class _LoginText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        style: TextStyle(color: Colors.grey[400], fontSize: 14.sp),
+        style: textTheme.bodySmall?.copyWith(color: Colors.grey[400]),
         children: [
-          const TextSpan(text: 'Zaten bir hesabın var mı? '),
+          TextSpan(text: "${tr('alreadyHaveAccount')}  "),
           TextSpan(
-            text: tr('login'),
-            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            recognizer: TapGestureRecognizer()..onTap = () => context.go('/login'),
+            text: "${tr('login')}!",
+            style: textTheme.bodySmall?.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.bold,
+            ),
+            recognizer:
+                TapGestureRecognizer()..onTap = () => context.go('/login'),
           ),
         ],
       ),
     );
   }
 }
- 

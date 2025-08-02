@@ -73,10 +73,13 @@ dependencies:
   json_annotation: ^4.9.0
   dartz: ^0.10.1
   bloc_concurrency: ^0.2.5
+  inner_shadow_container: ^1.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.13.1
 
   # Code Generation
   build_runner: ^2.4.7
@@ -84,6 +87,11 @@ dev_dependencies:
   retrofit_generator: ^8.0.4
   json_serializable: ^6.7.1
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/app_logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -101,6 +109,8 @@ flutter:
     - assets/splash/splash.png
     - assets/icons/
     - assets/translations/
+    - assets/images/
+    - assets/lottie/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

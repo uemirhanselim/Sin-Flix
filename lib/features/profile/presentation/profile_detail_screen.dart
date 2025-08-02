@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:dating_app/core/themes/app_theme.dart';
 import 'package:dating_app/features/user/domain/usecases/upload_user_photo.dart';
+import 'package:dating_app/shared/widgets/lottie_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,17 +22,22 @@ class ProfileDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ProfileDetailBloc(uploadUserPhoto: locator<UploadUserPhoto>()),
+          create:
+              (context) => ProfileDetailBloc(
+                uploadUserPhoto: locator<UploadUserPhoto>(),
+              ),
         ),
         BlocProvider(
-          create: (context) => UserBloc(
-            uploadUserPhoto: locator(),
-            logger: locator(),
-            getUserProfile: locator(),
-          ),
+          create:
+              (context) => UserBloc(
+                uploadUserPhoto: locator(),
+                logger: locator(),
+                getUserProfile: locator(),
+              ),
         ),
       ],
       child: MultiBlocListener(
@@ -41,17 +48,26 @@ class ProfileDetailScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) => const Center(child: CircularProgressIndicator()),
+                  builder:
+                      (_) => Center(
+                        child: LottieAnimation(
+                          "assets/lottie/loading.json",
+                          width: 70.w,
+                          height: 70.h,
+                        ),
+                      ),
                 );
               } else if (state is UserPhotoUploaded) {
                 Navigator.of(context).pop(); // Pop the loading dialog
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('photoUploadedSuccessfully'))));
-                print("Fotoğraf başarıyla yüklendi.");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(tr('photoUploadedSuccessfully'))),
+                );
                 context.go('/home'); // Navigate to home screen
               } else if (state is UserError) {
                 Navigator.of(context).pop(); // Pop the loading dialog
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-                print("Fotoğraf yükleme başarısız: ${state.message}");
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.message)));
                 context.pop(); // Pop the current screen (ProfileDetailScreen)
               }
             },
@@ -60,7 +76,9 @@ class ProfileDetailScreen extends StatelessWidget {
             listener: (context, state) {
               if (state is ProfileDetailUploadRequested) {
                 if (state.profileImage != null) {
-                  context.read<UserBloc>().add(UploadUserPhotoEvent(photo: state.profileImage!));
+                  context.read<UserBloc>().add(
+                    UploadUserPhotoEvent(photo: state.profileImage!),
+                  );
                 }
               }
             },
@@ -68,7 +86,7 @@ class ProfileDetailScreen extends StatelessWidget {
         ],
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.black,
+          backgroundColor: AppColors.background,
           appBar: AppBar(
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -84,9 +102,7 @@ class ProfileDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            title: Text(tr('profileDetail'), style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500,
-            color: Colors.white,
-            )),
+            title: Text(tr('profileDetail'), style: textTheme.titleLarge),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -99,27 +115,33 @@ class ProfileDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                                SizedBox(height: 20.h),
-                  Text(
-                    tr('register'),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize:18.sp, fontWeight: FontWeight.w600, color: Colors.white),
-                  ),
-                                SizedBox(height: 8.h),
-                  Text(
-                    tr('loginSubtitle'),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13.sp, color: Colors.grey[400], fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(height: 40.h),
+                    SizedBox(height: 20.h),
+                    Text(
+                      tr('uploadYourPhoto'),
+                      textAlign: TextAlign.center,
+                      style: textTheme.headlineMedium,
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      tr('uploadPhotoInfo'),
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: AppColors.text,
+                      ),
+                    ),
+                    SizedBox(height: 40.h),
                     BlocBuilder<ProfileDetailBloc, ProfileDetailState>(
                       builder: (context, state) {
                         return GestureDetector(
                           onTap: () async {
                             final ImagePicker _picker = ImagePicker();
-                            final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                            final XFile? image = await _picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
                             if (image != null) {
-                              innerContext.read<ProfileDetailBloc>().add(ProfileImagePicked(File(image.path)));
+                              innerContext.read<ProfileDetailBloc>().add(
+                                ProfileImagePicked(File(image.path)),
+                              );
                             }
                           },
                           child: Align(
@@ -129,19 +151,25 @@ class ProfileDetailScreen extends StatelessWidget {
                               width: 180.w,
                               decoration: BoxDecoration(
                                 color: const Color(0xFF2a2a2a),
-                                border: Border.all(color: Colors.grey.withOpacity(0.5),
-                                width: 1, ),
-                                borderRadius: BorderRadius.all(Radius.circular(18)),
-                                image: state.profileImage != null
-                                    ? DecorationImage(
-                                        image: FileImage(state.profileImage!),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
+                                border: Border.all(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(18),
+                                ),
+                                image:
+                                    state.profileImage != null
+                                        ? DecorationImage(
+                                          image: FileImage(state.profileImage!),
+                                          fit: BoxFit.cover,
+                                        )
+                                        : null,
                               ),
-                              child: state.profileImage == null
-                                  ? Image.asset("assets/icons/plus.png")
-                                  : null,
+                              child:
+                                  state.profileImage == null
+                                      ? Image.asset("assets/icons/plus.png")
+                                      : null,
                             ),
                           ),
                         );
@@ -150,7 +178,10 @@ class ProfileDetailScreen extends StatelessWidget {
                     const Spacer(),
                     PrimaryButton(
                       text: tr('continueButton'),
-                      onPressed: () => innerContext.read<ProfileDetailBloc>().add(ContinuePressed()),
+                      onPressed:
+                          () => innerContext.read<ProfileDetailBloc>().add(
+                            ContinuePressed(),
+                          ),
                     ),
                     SizedBox(height: 40.h),
                   ],

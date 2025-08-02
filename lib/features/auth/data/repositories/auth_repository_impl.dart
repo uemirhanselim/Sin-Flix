@@ -15,14 +15,22 @@ class AuthRepositoryImpl implements AuthRepository {
   final FlutterSecureStorage secureStorage;
   final SharedPreferences sharedPreferences;
 
-  AuthRepositoryImpl({required this.remoteDataSource, required this.secureStorage, required this.sharedPreferences});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.secureStorage,
+    required this.sharedPreferences,
+  });
 
   @override
-  Future<Either<Failure, UserEntity>> register({required String name, required String email, required String password}) async {
+  Future<Either<Failure, UserEntity>> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
     try {
-      final response = await remoteDataSource.register(RegisterRequestModel(name: name, email: email, password: password));
-      // Assuming the API returns a user entity upon successful registration
-      // This part might need adjustment based on the actual API response
+      final response = await remoteDataSource.register(
+        RegisterRequestModel(name: name, email: email, password: password),
+      );
       return Right(UserEntity(id: '', name: name, email: email));
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -30,9 +38,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> login({required String email, required String password}) async {
+  Future<Either<Failure, UserEntity>> login({
+    required String email,
+    required String password,
+  }) async {
     try {
-      final response = await remoteDataSource.login(LoginRequestModel(email: email, password: password));
+      final response = await remoteDataSource.login(
+        LoginRequestModel(email: email, password: password),
+      );
       if (response.response.code == 200) {
         await secureStorage.write(key: 'token', value: response.data.token);
         final userJson = jsonEncode(response.data.toJson());

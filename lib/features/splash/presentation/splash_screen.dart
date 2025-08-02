@@ -1,8 +1,8 @@
+import 'package:dating_app/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_assets.dart';
 import '../../../core/services/locator.dart';
-import '../../auth/domain/repositories/auth_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,15 +15,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 1), () async {
-      if (!mounted) return;
-      // if (user != null) {
-      //   // TODO: Ana sayfaya yönlendir
-      //   context.go('/home');
-      // } else {
-      //   context.go('/login');
-      // }
-    });
+    _checkToken();
+  }
+
+  Future<void> _checkToken() async {
+    final authLocalDataSource = locator<AuthLocalDataSource>();
+    final token = await authLocalDataSource.getToken();
+    if (!mounted) return;
+
+    await Future.delayed(Duration(seconds: 2));
+
+    if (mounted) {
+      if (token != null) {
+        context.go('/home');
+      } else {
+        context.go('/login');
+      }
+    }
   }
 
   @override
@@ -37,4 +45,4 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-} 
+}

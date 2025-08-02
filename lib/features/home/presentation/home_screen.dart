@@ -1,5 +1,9 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dating_app/core/themes/app_theme.dart';
+import 'package:dating_app/shared/widgets/lottie_extension.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/services/locator.dart';
 import '../../movie/domain/entities/movie_entity.dart';
-import '../../../shared/widgets/bottom_nav_bar.dart'; // New import
+import '../../../shared/widgets/bottom_nav_bar.dart';
 import 'bloc/home_bloc.dart';
 import 'bloc/home_event.dart';
 import 'bloc/home_state.dart';
@@ -28,42 +32,95 @@ class _HomeScreenState extends State<HomeScreen> {
     _scrollController.addListener(_onScroll);
   }
 
+  Future<void> _onRefresh(BuildContext context) async {
+    final completer = Completer();
+    final bloc = context.read<HomeBloc>();
+    bloc.add(const GetMoviesEvent());
+
+    StreamSubscription? subscription;
+    subscription = bloc.stream.listen((state) {
+      if (state is HomeLoaded || state is HomeError) {
+        if (!completer.isCompleted) {
+          completer.complete();
+          subscription?.cancel();
+        }
+      }
+    });
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => locator<HomeBloc>()
-        ..add(CheckAuthToken())
-        ..add(const GetMoviesEvent()),
+      create:
+          (context) =>
+              locator<HomeBloc>()
+                ..add(CheckAuthToken())
+                ..add(const GetMoviesEvent()),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.background,
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             if (state is HomeLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: LottieAnimation(
+                  "assets/lottie/loading.json",
+                  width: 70.w,
+                  height: 70.h,
+                ),
+              );
             } else if (state is HomeLoaded) {
               if (state.movies.isEmpty) {
-                return const Center(child: Text('Film bulunamadı.', style: TextStyle(color: Colors.white)));
+                return Center(
+                  child: Text(
+                    tr("movieNotFound"),
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                );
               }
-              return PageView.builder(
-                controller: PageController(), // PageView için bir controller gerekli
-                itemCount: state.hasReachedMax ? state.movies.length : state.movies.length + 1,
-                scrollDirection: Axis.vertical,
-                physics: const BouncingScrollPhysics(),
-                onPageChanged: (index) {
-                  if (index >= state.movies.length - 1 && !state.hasReachedMax) {
-                    context.read<HomeBloc>().add(LoadMoreMovies());
-                  }
-                },
-                itemBuilder: (context, index) {
-                  return index >= state.movies.length
-                      ? const Center(child: CircularProgressIndicator())
-                      : _MoviePageItem(movie: state.movies[index]);
-                },
+              return RefreshIndicator(
+                onRefresh: () => _onRefresh(context),
+                child: PageView.builder(
+                  controller:
+                      PageController(), // PageView için bir controller gerekli
+                  itemCount:
+                      state.hasReachedMax
+                          ? state.movies.length
+                          : state.movies.length + 1,
+                  scrollDirection: Axis.vertical,
+                  physics: const BouncingScrollPhysics(),
+                  onPageChanged: (index) {
+                    if (index >= state.movies.length - 1 &&
+                        !state.hasReachedMax) {
+                      context.read<HomeBloc>().add(LoadMoreMovies());
+                    }
+                  },
+                  itemBuilder: (context, index) {
+                    return index >= state.movies.length
+                        ? Center(
+                          child: LottieAnimation(
+                            "assets/lottie/loading.json",
+                            width: 70.w,
+                            height: 70.h,
+                          ),
+                        )
+                        : _MoviePageItem(movie: state.movies[index]);
+                  },
+                ),
               );
             } else if (state is HomeError) {
-              return Center(child: Text('Hata: ${state.message}', style: const TextStyle(color: Colors.white)));
+              return Center(
+                child: Text(
+                  '${tr("error")}: ${state.message}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: AppColors.primary),
+                ),
+              );
             }
-            return const Center(child: Text('Başlangıç.', style: TextStyle(color: Colors.white)));
+            return Center(
+              child: Text('---', style: Theme.of(context).textTheme.bodyLarge),
+            );
           },
         ),
       ),
@@ -90,7 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 class _MoviePageItem extends StatelessWidget {
   final MovieEntity movie;
 
@@ -111,12 +167,16 @@ class _MoviePageItem extends StatelessWidget {
         _buildBackgroundImage(),
         _buildGradientOverlay(),
         _buildLikeButton(context), // context parametresi eklendi
-        _buildUserInfo(),
-        BottomNavBar(currentIndex: 0, onItemTapped: (index) { // Yeni widget burada kullanılıyor
-          if (index == 1) {
-            context.go('/profile');
-          }
-        }),
+        _buildUserInfo(context),
+        BottomNavBar(
+          currentIndex: 0,
+          onItemTapped: (index) {
+            // Yeni widget burada kullanılıyor
+            if (index == 1) {
+              context.go('/profile');
+            }
+          },
+        ),
       ],
     );
   }
@@ -124,13 +184,24 @@ class _MoviePageItem extends StatelessWidget {
   Widget _buildBackgroundImage() {
     final imageUrl = movie.poster;
     if (imageUrl.isEmpty) {
-      return Container(color: Colors.grey[800]);
+      return Container(color: AppColors.grey);
     }
     return CachedNetworkImage(
       imageUrl: _sanitizeUrl(imageUrl),
       fit: BoxFit.cover,
-      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-      errorWidget: (context, url, error) => Container(color: Colors.grey[800], child: const Icon(Icons.error, color: Colors.white)),
+      placeholder:
+          (context, url) => Center(
+            child: LottieAnimation(
+              "assets/lottie/loading.json",
+              width: 70.w,
+              height: 70.h,
+            ),
+          ),
+      errorWidget:
+          (context, url, error) => Container(
+            color: AppColors.grey,
+            child: const Icon(Icons.error, color: AppColors.text),
+          ),
     );
   }
 
@@ -140,8 +211,8 @@ class _MoviePageItem extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(0.7),
-            Colors.black
+            AppColors.background.withOpacity(0.7),
+            AppColors.background,
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -151,7 +222,8 @@ class _MoviePageItem extends StatelessWidget {
     );
   }
 
-  Widget _buildLikeButton(BuildContext context) { // context parametresi eklendi
+  Widget _buildLikeButton(BuildContext context) {
+    // context parametresi eklendi
     return Positioned(
       bottom: 200,
       right: 20,
@@ -159,25 +231,31 @@ class _MoviePageItem extends StatelessWidget {
         height: 71.h,
         width: 50.w,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2),
+          color: AppColors.background.withOpacity(0.2),
           borderRadius: BorderRadius.circular(40),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          border: Border.all(color: AppColors.text.withOpacity(0.2), width: 1),
         ),
         child: IconButton(
           icon: Icon(
             movie.isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: movie.isFavorite ? Colors.red : Colors.white.withOpacity(0.5),
+            color:
+                movie.isFavorite
+                    ? AppColors.primary
+                    : AppColors.text.withOpacity(0.5),
             size: 28,
           ),
           onPressed: () {
-            context.read<HomeBloc>().add(ToggleFavoriteEvent(movieId: movie.id));
+            context.read<HomeBloc>().add(
+              ToggleFavoriteEvent(movieId: movie.id),
+            );
           },
         ),
       ),
     );
   }
 
-  Widget _buildUserInfo() {
+  Widget _buildUserInfo(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Positioned(
       bottom: 95,
       left: 0,
@@ -188,24 +266,36 @@ class _MoviePageItem extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
           child: Container(
             padding: const EdgeInsets.all(16.0),
-            color: Colors.black.withOpacity(0.2),
+            color: AppColors.background.withOpacity(0.2),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.grey[800],
+                  backgroundColor: AppColors.grey,
                   child: ClipOval(
-                    child: movie.poster.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: _sanitizeUrl(movie.poster),
-                            fit: BoxFit.cover,
-                            width: 40,
-                            height: 40,
-                            placeholder: (context, url) => const Center(child: CircularProgressIndicator(strokeWidth: 2.0)),
-                            errorWidget: (context, url, error) => const Icon(Icons.person, color: Colors.white),
-                          )
-                        : const Icon(Icons.person, color: Colors.white),
+                    child:
+                        movie.poster.isNotEmpty
+                            ? CachedNetworkImage(
+                              imageUrl: _sanitizeUrl(movie.poster),
+                              fit: BoxFit.cover,
+                              width: 40,
+                              height: 40,
+                              placeholder:
+                                  (context, url) => Center(
+                                    child: LottieAnimation(
+                                      "assets/lottie/loading.json",
+                                      width: 70.w,
+                                      height: 70.h,
+                                    ),
+                                  ),
+                              errorWidget:
+                                  (context, url, error) => const Icon(
+                                    Icons.person,
+                                    color: AppColors.text,
+                                  ),
+                            )
+                            : const Icon(Icons.person, color: AppColors.text),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -216,31 +306,34 @@ class _MoviePageItem extends StatelessWidget {
                     children: [
                       Text(
                         movie.title, // Username
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+                        style: textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 4),
                       RichText(
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(
-                          text: movie.plot.length > 65 ? movie.plot.substring(0, 65) : movie.plot,
-                          style: const TextStyle(fontSize: 13, color: Colors.white70, fontWeight: FontWeight.w600),
+                          text:
+                              movie.plot.length > 65
+                                  ? movie.plot.substring(0, 65)
+                                  : movie.plot,
+                          style: textTheme.bodyMedium,
                           children: [
                             if (movie.plot.length > 65)
                               TextSpan(
-                                text: ' Daha Fazlası',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                text: " ${tr("more")}",
+                                style: textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // Tıklama işlevi burada
-                                  },
+                                recognizer:
+                                    TapGestureRecognizer()
+                                      ..onTap = () {
+                                        // Tıklama işlevi burada
+                                      },
                               ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -252,4 +345,3 @@ class _MoviePageItem extends StatelessWidget {
     );
   }
 }
-

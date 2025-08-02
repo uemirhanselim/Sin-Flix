@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "667760234130",
+    "project_id": "nodelabs-case-movie",
+    "storage_bucket": "nodelabs-case-movie.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667760234130:android:b5d65fe6e557bb761fa04b",
+        "android_client_info": {
+          "package_name": "com.example.dating_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtvwpo62E6so562guJwESVpR_nZuXZwY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
