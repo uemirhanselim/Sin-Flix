@@ -14,14 +14,6 @@ class AppColors {
 }
 
 class AppTheme {
-  static final ThemeData lightThemex = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-    fontFamily: 'Euclid',
-  );
-
   static final ThemeData lightTheme = darkTheme.copyWith(
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
