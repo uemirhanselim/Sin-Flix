@@ -7,7 +7,7 @@ Bu proje, Dating app mantığında tasarlanmış bir Film Uygulamasıdır ve Flu
 
 | Video Kaydı | 
 | :----------: |
-| <img src="screenshots/test-case-record.mp4" width="250"> |
+| <img src="https://github.com/user-attachments/assets/b8d2cbea-b92c-458d-93e0-bafce3c2187e" width="250"> |
 
 | Splash Ekranı | Login Ekranı | Register Ekranı |
 | :----------: | :-------: | :------------: |
