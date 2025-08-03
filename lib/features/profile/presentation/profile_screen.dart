@@ -80,7 +80,7 @@ class ProfileScreen extends StatelessWidget {
   AppBar _appBar(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return AppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GestureDetector(

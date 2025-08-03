@@ -66,13 +66,7 @@ class LoginScreen extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           body: SizedBox.expand(
             child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1a1a1a), AppColors.background],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
+              decoration: const BoxDecoration(color: AppColors.background),
               child: SafeArea(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -175,7 +169,7 @@ class _EmailTextField extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (_) {
         if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+').hasMatch(email)) {
-          return 'Geçerli bir email girin';
+          return tr("emailError");
         }
         return null;
       },
@@ -214,7 +208,7 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (_) {
         if (widget.password.length < 6) {
-          return 'Şifre en az 6 karakter olmalı';
+          return tr("passwordError");
         }
         return null;
       },

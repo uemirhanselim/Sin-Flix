@@ -34,5 +34,9 @@
   "profile": "Profil",
   "more": "More",
   "registerSuccessfull": "Kayıt Başarılı!",
-  "photoUploadedSuccessfully": "Fotoğraf Yüklendi"
+  "photoUploadedSuccessfully": "Fotoğraf Yüklendi",
+  "emailError": "Geçerli bir email girin",
+  "passwordError": "Şifre en az 6 karakter olmalı",
+  "passwordDoesNotMatch": "Şifreler eşleşmiyor",
+  "nameSurnameNeeded": "Ad Soyad gerekli"
 }

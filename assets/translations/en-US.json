@@ -34,5 +34,9 @@
   "profile": "Profile",
   "more": "More",
   "registerSuccessfull": "Register Successfull!",
-  "photoUploadedSuccessfully": "Photo Uploaded"
+  "photoUploadedSuccessfully": "Photo Uploaded",
+  "emailError": "Enter a valid email",
+  "passwordError": "Password must be at least 6 characters",
+  "passwordDoesNotMatch": "Passwords does not match",
+  "nameSurnameNeeded": "Name and Surname needed"
 }
