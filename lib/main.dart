@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dating_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -41,6 +42,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -59,6 +64,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           routerConfig: GoRouter(
             initialLocation: '/',
+            observers: [observer],
             routes: [
               GoRoute(
                 path: '/',

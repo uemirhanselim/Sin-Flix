@@ -1,6 +1,36 @@
-# Dating App - Flutter Teknik Değerlendirme Projesi
+# Dating App ^Görünümlü^ Movie App - Flutter Teknik Değerlendirme Projesi
 
 Bu proje, Dating app mantığında tasarlanmış bir Film Uygulamasıdır ve Flutter ile geliştirilmiştir. Proje, modern mobil uygulama geliştirme prensipleri, temiz kod mimarisi ve en iyi pratikler göz önünde bulundurularak hazırlanmıştır.
+
+
+## 📱 Uygulama Görselleri
+
+| Video Kaydı | 
+| :----------: |
+| <img src="screenshots/test-case-record.mp4" width="250"> |
+
+| Splash Ekranı | Login Ekranı | Register Ekranı |
+| :----------: | :-------: | :------------: |
+| <img src="screenshots/splash.png" width="250"> | <img src="screenshots/login.png" width="250"> | <img src="screenshots/register.png" width="250"> |
+
+| Ana Sayfa Ekranı | Profil Ekranı | Teklif Ekranı |
+| :----------: | :-------: | :------------: |
+| <img src="screenshots/home.png" width="250"> | <img src="screenshots/profile.png" width="250"> | <img src="screenshots/bottomsheet.png" width="250"> |
+
+| Fotoğraf Güncelleme Ekranı |
+| :----------: |
+| <img src="screenshots/uploadPhoto.png" width="250"> |
+
+## 📱 Firebase Analytics ve Crashlytics Görselleri
+
+| Firebase Analytics |
+| :----------: |
+| <img src="screenshots/analytics.png" width="750"> |
+
+| Firebase Crashlytics |
+| :----------: |
+| <img src="screenshots/crashlytics.png" width="750"> |
+
 
 ## 🚀 Kullanılan Teknolojiler ve Paketler
 
@@ -102,27 +132,6 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
    flutter run
    ```
 
-## 📱 Uygulama Görselleri
-
-*(Bu bölüme, projenin ekran görüntülerini `screenshots/` klasörü oluşturup ekleyebilirsiniz.)*
-
-| Video Kaydı | 
-| :----------: |
-| <img src="screenshots/test-case-record.webm" width="250"> |
-
-| Splash Ekranı | Login Ekranı | Register Ekranı |
-| :----------: | :-------: | :------------: |
-| <img src="screenshots/splash.png" width="250"> | <img src="screenshots/login.png" width="250"> | <img src="screenshots/register.png" width="250"> |
-
-| Ana Sayfa Ekranı | Profil Ekranı | Teklif Ekranı |
-| :----------: | :-------: | :------------: |
-| <img src="screenshots/home.png" width="250"> | <img src="screenshots/profile.png" width="250"> | <img src="screenshots/bottomsheet.png" width="250"> |
-
-| Fotoğraf Güncelleme Ekranı |
-| :----------: |
-| <img src="screenshots/uploadPhoto.png" width="250"> |
-
-
 ## 🏗️ Proje Mimarisi
 
 Proje, sürdürülebilir, ölçeklenebilir ve test edilebilir bir kod tabanı oluşturmak amacıyla **Clean Architecture** prensiplerine uygun olarak tasarlanmıştır. Bu mimari, katmanlar arasında net bir sorumluluk ayrımı sağlar.
@@ -158,7 +167,7 @@ Uygulama, `easy_localization` paketi ile **Türkçe (TR)** ve **İngilizce (EN)*
 ## 🔗 API ve Kaynaklar
 
 Bu projede kullanılan API'ler ve diğer kaynaklar hakkında bilgiler:
-- **API:** Proje için kullanılan API endpoint'leri (varsa dokümantasyon linki eklenebilir).
+- **API:** Proje için kullanılan API endpoint'leri (Swagger UI - RestAPI).
 - **İkonlar ve Varlıklar:** Projede kullanılan ikonlar ve diğer varlıklar `assets/` klasöründe bulunmaktadır.
 
 ## 👨‍💻 Geliştirici Notları ve Katkıda Bulunma

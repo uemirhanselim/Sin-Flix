@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/logger_service.dart';
 import '../../domain/usecases/login_user.dart';
@@ -67,6 +68,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthError(failure.message));
       },
       (user) {
+        FirebaseAnalytics.instance.logLogin(loginMethod: 'email');
         emit(state.copyWith(formStatus: FormStatus.submissionSuccess));
         emit(AuthAuthenticated(user));
       },
@@ -88,6 +90,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthError(failure.message));
       },
       (user) {
+        FirebaseAnalytics.instance.logSignUp(signUpMethod: 'email');
         logger.i('Register successful for email: ${state.email}');
         emit(state.copyWith(formStatus: FormStatus.submissionSuccess));
         emit(AuthAuthenticated(user));

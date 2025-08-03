@@ -1,4 +1,5 @@
 import 'package:dating_app/features/movie/domain/entities/movie_entity.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/services/logger_service.dart';
@@ -103,6 +104,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             // Kullanıcıya hata mesajı gösterebiliriz
           },
           (_) {
+            FirebaseAnalytics.instance.logEvent(
+              name: 'add_to_favorites',
+              parameters: {
+                'movie_id': event.movieId,
+              },
+            );
             logger.i('Favorite toggled successfully for movie ${event.movieId}');
             // Başarılı, UI zaten güncellendi
           },
